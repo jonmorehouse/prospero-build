@@ -4,8 +4,6 @@ mocha = require "mocha"
 should = chai.should()
 
 
-
-
 # we want to export the database connection from our main controller file
 {DB} = require "../src/main.coffee"
 # get_files is the class currently being tested
@@ -41,8 +39,18 @@ describe "GetFiles", ->
 
 			files = getFiles._getFiles "homepage", "css"
 			should.exist files
-			files.should.have.length.above 0
-			files[0].should.be.an "object"
+			files.should.be.an "Object"
+			console.log files
+
+	describe "Getfiles.getCSS", ->
+
+
+		# files = getFiles.getCss "homepage"
+		# should.exist files
+
+
+		# files.should.be.an "array"
+
 
 	describe "Getfiles.getJavascript", ->
 
@@ -54,13 +62,12 @@ describe "GetFiles", ->
 			files.should.be.an "array"
 
 
-
 	describe "Getfiles._sortJavascript", ->
 
 		it "should return a sorted list based upon input objects", ->
 
-			Getfiles._sortJavascript()
-		
+			getFiles._sortJavascript()
+			
 
 
 
