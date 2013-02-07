@@ -21,6 +21,6 @@ for page_id in config.page_ids
 	db.insert table, data, (err, info) =>
 
 		# insertion ran correctly
-		
 
+name = "Jon"
 
