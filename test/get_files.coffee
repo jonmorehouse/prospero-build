@@ -29,20 +29,37 @@ describe "GetFiles", ->
 
 		should.exist getFiles._sortJavascript #specifically designed function to help ensure that we sort the javascript files correctly
 
+	it "should have a private getFiles function", ->
+
+		should.exist getFiles._getFiles #specifically for getting the objects
+
+
 	# test the actual functions here
+	describe "Getfiles._getFiles", ->
+
+		it "Should return a list of objects", ->
+
+			files = getFiles._getFiles "homepage", "css"
+			should.exist files
+			files.should.have.length.above 0
+			files[0].should.be.an "object"
+
 	describe "Getfiles.getJavascript", ->
 
 		it "should return a list of file urls", ->
 
-			files = getFiles.getJavascript("homepage")
+			files = getFiles.getJavascript "homepage"
 			should.exist files
 			
 			files.should.be.an "array"
 
+
+
 	describe "Getfiles._sortJavascript", ->
 
-		it "should return a sorted list based upon "
-		
+		it "should return a sorted list based upon input objects", ->
+
+			Getfiles._sortJavascript()
 		
 
 
