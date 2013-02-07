@@ -1,5 +1,5 @@
 DB = require "mysql-activerecord"
-config = require "./config.coffee"
+config = require "../config.coffee"
 
 # instantiate a database connection
 db = new DB.Adapter
@@ -23,4 +23,7 @@ for page_id in config.page_ids
 		# insertion ran correctly
 
 name = "Jon"
+
+root = exports ? window
+root.DB = db
 

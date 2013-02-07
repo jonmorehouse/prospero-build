@@ -17,6 +17,8 @@ Modules / Seperation
 
 		instantiate a javascript and css module
 
+
+
 2.) CSS Module
 	
 	get all the proper files
@@ -26,9 +28,11 @@ Modules / Seperation
 	minimize / compress 
 	save file
 
-3.) Javascript Module
+3.) Javascript Module // responsible for controlling and 
 
-	get all proper files
+	get all proper files // -- need to sort -- external modules
+
+
 	generate proper urls / files
 	combine files
 	minimize javascript
