@@ -13,14 +13,6 @@ db = new DB.Adapter
 	password : config.mysql.password
 	database : config.mysql.database
 
-
-
-get = new getFiles.GetFiles db, "base_path"
-
-get.getCss("homepage").then (files) ->
-
-	console.log files
-	process.exit 1 #this is what kills the database functionality because otherwise it will keep the program alive
-
+# 
 root = exports ? window
 root.DB = db

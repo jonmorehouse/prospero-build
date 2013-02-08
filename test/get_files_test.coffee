@@ -35,16 +35,50 @@ describe "GetFiles", ->
 	# test the actual functions here
 	describe "Getfiles._getFiles", ->
 
-		it "Should return a list of objects", ->
+		it "Should have an element", (done)->
 
-			files = getFiles._getFiles "homepage", "css"
-			should.exist files
-			files.should.be.an "Object"
-			console.log files
+			getFiles._getFiles "homepage", "css", (data) ->
+
+				data.should.not.be.undefined
+				data.should.be.an "array"
+				data.should.have.length.above 0
+
+				done()
+
+	describe "Getfiles._sortJavascript", ->
+
+		test = null
+		before (done) ->
+
+			test = "null"
+			done()
+
+		beforeEach (done) ->
+
+			console.log "Before each!"
+			done()
+
+
+		it "Should return a sorted list", (done) ->
+
+			test.should.not.be.undefined
+
+			done()
+
+		it "Should have something that looks cool!", (done) ->
+
+
+
+			done()
+
+				
 
 	describe "Getfiles.getCSS", ->
 
-		it "Should "
+		it "Should return a list of full urls for css files given the correct page_id", -> 
+
+			files = getFiles.getCss "homepage"
+			# files.should.be.defined
 
 
 	describe "Getfiles.getJavascript", ->
@@ -55,15 +89,6 @@ describe "GetFiles", ->
 			# should.exist files
 			
 			# files.should.be.an "array"
-
-
-	describe "Getfiles._sortJavascript", ->
-
-		it "should return a sorted list based upon input objects", ->
-
-			getFiles._sortJavascript()
-			
-
 
 
 
