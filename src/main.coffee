@@ -1,5 +1,10 @@
+# node modules
 DB = require "mysql-activerecord"
+Q = require "q"
+
+# project files
 config = require "../config.coffee"
+getFiles = require "./modules/get_files.coffee"
 
 # instantiate a database connection
 db = new DB.Adapter
@@ -9,21 +14,13 @@ db = new DB.Adapter
 	database : config.mysql.database
 
 
-table = "valid_page_ids"
-# db.select("category").get "category_type_categories", (err, rows, fields) =>
-for page_id in config.page_ids
 
-	# data to be inserted
-	data = 
-		page_id : page_id
+get = new getFiles.GetFiles db, "base_path"
 
-	# run the insertion
-	db.insert table, data, (err, info) =>
+get.getCss("homepage").then (files) ->
 
-		# insertion ran correctly
-
-name = "Jon"
+	console.log files
+	process.exit 1 #this is what kills the database functionality because otherwise it will keep the program alive
 
 root = exports ? window
 root.DB = db
-

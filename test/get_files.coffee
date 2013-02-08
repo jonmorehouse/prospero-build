@@ -44,22 +44,17 @@ describe "GetFiles", ->
 
 	describe "Getfiles.getCSS", ->
 
-
-		# files = getFiles.getCss "homepage"
-		# should.exist files
-
-
-		# files.should.be.an "array"
+		it "Should "
 
 
 	describe "Getfiles.getJavascript", ->
 
 		it "should return a list of file urls", ->
 
-			files = getFiles.getJavascript "homepage"
-			should.exist files
+			# files = getFiles.getJavascript "homepage"
+			# should.exist files
 			
-			files.should.be.an "array"
+			# files.should.be.an "array"
 
 
 	describe "Getfiles._sortJavascript", ->

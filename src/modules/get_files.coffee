@@ -1,38 +1,34 @@
+Q = require "q"
+
+
+
 class GetFiles 
 
 	constructor : (@db, @basePath) ->
 
 		# empty constructor for the time being
 
+	getCss : (pageId) =>
 
-	getCss : (pageId, callback) =>
+		q = Q.defer()
 
-		# responsible for grabbing the proper css files and returnin them in order!
+		# grab the files from the page_id
+		@_getFiles pageId, "css", (files) ->
 
-		@_getFiles pageId, "css", (rawFiles) ->
+			# loop through the files and create the proper elements
+			q.resolve files
 
-			# this is the callback function necessary for this application
-			# will call the callback in this function later
+		# return the promise to the calling program -- outsie
+		return q.promise
 
-			# loop through each row and grab the url out of the row and then pluck it into 
-			urls = @basePath + file.url for file in rawFiles
+	getJavascript : (pageId) => 
 
-			# check if we need to use a callback function here
-			if callback
-				callback urls
-
-
-		# urls = row.file for row in rawFiles
-
-		return []
+		# responsible for sorting the javascript etc
 
 
-	getJavascript : (pageId, callback) =>
-
-		# responsible for grabbing the proper javascript files from the datbase and returning them
-		[]		
 
 	_getFiles : (pageId, type, callback) =>
+
 
 		# this will be hardcoded to allow for control over the table mappings
 		table = "javascript_modules"		
@@ -53,12 +49,13 @@ class GetFiles
 
 		@db.where(data).get table, (err, rows, fields) -> 
 
+			if err
 
-			# check for errors here
-			# 
+				console.log "query not working"
+				# there was a problem need to exit the program
 
-
-						
+			else
+				callback rows
 
 
 
