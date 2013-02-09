@@ -78,27 +78,37 @@ describe "GetFiles", ->
 			getFiles._sortJavascript files, (sortedFiles) ->
 
 
-				console.log sortedFiles
+				console.log "Sorted files comparison here"
 
 				done()	
 
 
 	describe "Getfiles.getCSS", ->
 
-		it "Should return a list of full urls for css files given the correct page_id", -> 
+		it "Should return a list of full urls for css files given the correct page_id", (done) -> 
 
-			files = getFiles.getCss "homepage"
-			# files.should.be.defined
+			getFiles.getCss("homepage").then (files) ->
+
+				files.should.not.be.undefined
+				files.should.be.an "array"
+				files.should.have.length.above 0
+
+				done()
 
 
 	describe "Getfiles.getJavascript", ->
 
-		it "should return a list of file urls", ->
+		it "should return a list of file urls", (done) ->
 
-			# files = getFiles.getJavascript "homepage"
-			# should.exist files
-			
-			# files.should.be.an "array"
+			getFiles.getJavascript("homepage").then (files) ->
+
+				files.should.not.be.undefined
+				files.should.be.an "array"
+				files.should.have.length.above 0
+
+				done()
+				
+
 
 
 

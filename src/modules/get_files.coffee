@@ -13,7 +13,12 @@ class GetFiles
 		q = Q.defer()
 
 		# grab the files from the page_id
-		@_getFiles pageId, "css", (files) ->
+		@_getFiles pageId, "css", (rawFiles) ->
+
+			files = []
+
+			# grab the individual url for each of the rawFiles
+			files.push file.url for file in rawFiles
 
 			# loop through the files and create the proper elements
 			q.resolve files
@@ -24,8 +29,18 @@ class GetFiles
 	getJavascript : (pageId) => 
 
 		# responsible for sorting the javascript etc
-		
+		q = Q.defer()
 
+		# get the files and then fulfill our promise
+		@_getFiles pageId, "javascript", (rawFiles) =>
+
+			# now asynchronously sort the files
+			@_sortJavascript rawFiles, (files) =>
+
+				q.resolve files
+
+		# allow for an asynchronous return value
+		return q.promise
 
 
 	_getFiles : (pageId, type, callback) =>
