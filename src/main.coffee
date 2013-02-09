@@ -16,3 +16,4 @@ db = new DB.Adapter
 # 
 root = exports ? window
 root.DB = db
+root.config = config

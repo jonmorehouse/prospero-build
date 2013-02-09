@@ -1,17 +1,22 @@
+# load in proper modules for this test app
 chai = require "chai"
 mocha = require "mocha"
+Q = require "q"
 
+
+# initialize should statements
 should = chai.should()
 
 
 # we want to export the database connection from our main controller file
-{DB} = require "../src/main.coffee"
+{DB, config} = require "../src/main.coffee"
 # get_files is the class currently being tested
 {GetFiles} = require "../src/modules/get_files"
 
+# desribe getFiles class
 describe "GetFiles", ->
 
-	getFiles = new GetFiles DB
+	getFiles = new GetFiles DB, config
 
 	# test basic setting up of files etc
 	it "should have a DB connection", ->
@@ -42,36 +47,41 @@ describe "GetFiles", ->
 				data.should.not.be.undefined
 				data.should.be.an "array"
 				data.should.have.length.above 0
+				data[0].should.be.an "object"
 
 				done()
 
 	describe "Getfiles._sortJavascript", ->
 
-		test = null
+		# need to get files
+		# test the files against each page etc
+		files = null #initialize the files element	
 		before (done) ->
 
-			test = "null"
-			done()
+			getFiles._getFiles "homepage", "javascript", (data) ->
 
-		beforeEach (done) ->
+				files = data
+				done()
 
-			console.log "Before each!"
-			done()
+		it "Should return a list of sorted javascript files given a files object", (done) ->
+
+			getFiles._sortJavascript files, (sortedFiles) ->
+
+				sortedFiles.should.not.be.undefined
+				sortedFiles.should.be.an "array"
+				sortedFiles.should.have.length.above 0
+				sortedFiles[0].should.be.a "string"
+				done()
+
+		it "Should sort the list properly for the homepage", (done) ->
+
+			getFiles._sortJavascript files, (sortedFiles) ->
 
 
-		it "Should return a sorted list", (done) ->
+				console.log sortedFiles
 
-			test.should.not.be.undefined
+				done()	
 
-			done()
-
-		it "Should have something that looks cool!", (done) ->
-
-
-
-			done()
-
-				
 
 	describe "Getfiles.getCSS", ->
 

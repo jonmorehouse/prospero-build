@@ -4,7 +4,7 @@ Q = require "q"
 
 class GetFiles 
 
-	constructor : (@db, @basePath) ->
+	constructor : (@db, @config) ->
 
 		# empty constructor for the time being
 
@@ -24,6 +24,7 @@ class GetFiles
 	getJavascript : (pageId) => 
 
 		# responsible for sorting the javascript etc
+		
 
 
 
@@ -50,7 +51,6 @@ class GetFiles
 		@db.where(data).get table, (err, rows, fields) -> 
 
 			if err
-
 				console.log "query not working"
 				# there was a problem need to exit the program
 
@@ -58,11 +58,24 @@ class GetFiles
 				callback rows
 
 
-
-	_sortJavascript : (files) =>
+	# pure async call
+	_sortJavascript : (files, callback) =>
 
 		# responsible for sorting the javascript files correctly
+		lists = {} #individual lists for each of the elements
+		sortedFiles = [] #sorted files for each array
 
+		# create an empty list for each of the different javascript file types
+		lists[elementType] = [] for elementType in @config.javascriptSortOrder
+
+		# now want to grab each of the different types of files
+		lists[element.type].push element.url for element in files
+
+		#now combine all of these sorted lists into the final list by combining the arrays
+		sortedFiles.push lists[element]... for element of lists
+
+		# asynchronous callback to return the files
+		callback sortedFiles
 
 
 root = exports ? window
