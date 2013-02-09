@@ -1,1 +1,3 @@
 config.coffee
+bin/
+node_modules/
