@@ -1,1 +1,1 @@
-alias test='mocha --compilers coffee:coffee-script -R spec'
+alias test='mocha --recursive --compilers coffee:coffee-script -R spec'

@@ -1,6 +1,6 @@
 {
   "name": "prospero_build",
-  "preferGlobal": true,
+  "preferGlobal": false,
   "version": "0.0.1",
   "author": "Jon Morehouse <morehousej09@gmail.com>",
   "description": "A quick build tool for a project I'm working on. Responsible for building javascript modules based upon my own custom design system.",

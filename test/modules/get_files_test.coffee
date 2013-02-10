@@ -1,7 +1,5 @@
 # load in proper modules for this test app
-chai = require "chai"
-mocha = require "mocha"
-Q = require "q"
+{mocha, chai, Q, basePath} = require "../test_helper.coffee"
 
 
 # initialize should statements
@@ -9,9 +7,9 @@ should = chai.should()
 
 
 # we want to export the database connection from our main controller file
-{DB, config} = require "../src/main.coffee"
+{DB, config} = require "#{basePath}/main.coffee"
 # get_files is the class currently being tested
-{GetFiles} = require "../src/modules/get_files"
+{GetFiles} = require "#{basePath}/modules/get_files"
 
 # desribe getFiles class
 describe "GetFiles", ->
