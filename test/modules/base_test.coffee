@@ -1,4 +1,4 @@
-{mocha, chai, Q, basePath} = require "../test_helper.coffee"
+{mocha, chai, Q, basePath, fs} = require "../test_helper.coffee"
 
 should = chai.should()
 
@@ -11,6 +11,7 @@ describe "Base", ->
 	base = null
 	files = null
 	getFiles = new GetFiles DB, config
+	tempFile = "#{basePath}/tempTest.tmp"
 
 	before (done) ->
 
@@ -19,12 +20,22 @@ describe "Base", ->
 		filesPromise = getFiles.getJavascript "homepage"
 
 		# called once the function resolves its return
-		files.then (data) ->
+		filesPromise.then (data) ->
 
 			files = data
 			done()
 
+	after (done) ->
 
+		fs.exists tempFile, (status) ->
+
+			if status
+
+				fs.unlink tempFile, ->
+
+					console.log "#{tempFile} deleted."
+			done()		
+					
 
 	it "Should be instantiated with just a config object", ->
 
@@ -32,6 +43,7 @@ describe "Base", ->
 		base.should.not.be.undefined
 		base.should.be.an "object"
 
+	# test readData functionality
 	describe "Base.readData", ->
 
 		it "Should be a function", ->
@@ -39,11 +51,21 @@ describe "Base", ->
 			should.exist base.readData
 			base.readData.should.be.a "function"
 
-		it "Should return false given anything other than an array of strings", ->
+		it "Should return false when given anything other than an array of strings", ->
 
-			fileData = base.readData ""
+			data = base.readData ""
+			data.should.equal false
 
-			fileData.should.equal false
+		it "Should return a string when passed a list of paths", (done) ->
+			# now test the readData asynchronous function when we pass it in a valid files object
+			data = base.readData files
+			data.then (fileData) ->
+
+				should.exist fileData
+				fileData.should.not.be.undefined
+				fileData.should.be.a "string"
+
+				done()
 
 		it "Should return a promise object, synchronously", ->
 
@@ -52,12 +74,40 @@ describe "Base", ->
 			fileDataPromise.should.not.be.undefined
 			fileDataPromise.should.be.an "object"	
 
-		it "Should should return a string from the promise asynchronously", (done) ->
 
-			fileDataPromise = base.readData files
 
-			fileDataPromise.then (fileData) ->
+	# test the writeData function
+	describe "base.writeData", ->
 
-				should.exist fileData
-				fileData.should.be.a "string"
+		it "Should properly write the file data", (done) ->
+
+			# write the file and test the status that it exists afterwards
+			base.writeData(tempFile, "Hello world from writeData").then ->
+
+				fs.exists tempFile, (status) ->
+
+					status.should.equal true
+					done()
+
+	# test the getPaths function to ensure proper functionality
+	describe "Base._getPaths", ->
+
+		it "Should be a defined object method", ->
+
+			should.exist base._getPaths files
+			base._getPaths.should.not.be.undefined
+
+		it "Should return false given anything other than an array", ->
+
+			paths = base._getPaths files
+			paths.should.be.an "array"	
+
+			paths = base._getPaths null
+			paths.should.equal false
+
+		it "Should return an array of strings given an array of relative paths", ->
+
+			paths = base._getPaths files
+			paths.should.be.an "array"
+			paths.should.have.length.above 0
 

@@ -10,32 +10,89 @@ class Base
 
 	readData : (files) ->
 
-		if not files or typeof files != "array" or files.length == 0
+		if not files or not files instanceof Array
 
 			return false
 
-		# will be responsible for loading in the proper files each time etc
-		# create a deferment promise for this object
-		q = Q.defer()
+		# normalize the proper paths
+		files = @_getPaths(files).reverse()
 
-		# fileData variable will contain all of the information from all of the files etc
+		q = Q.defer()
 		fileData = ""
 
-		# need an asynchronouse function here to return the promises etc
-		read = fs.readData array.splice(files, 1), (err, data) ->
+		# recursive worker function
+		# need to check that each file exists
+		worker = (path) =>
 
-			# append the file data
-			fileData += data
+			fs.exists path, (status) =>
 
-			# if there are no other files to append then we need to append the data that we recieved
-			if files.length == 0
+				# if the file doesn't exist we want to throw an error and stop compilation because this will be a problem for compiled applications
+				if not status
 
-				# end the function by fulfilling the promise
-				return q.resolve fileData
+					throw new Error "File doesn't exist"
+					q.resolve 
 
-			# return this function
-			else
-				return read
+				# now that we know the file exists, lets read it and grab the data to append to our string that's already being saved
+				fs.readFile path, "utf-8", (err, data) =>
 
+					# ensure that the data was read properly
+					if err
+
+						throw new Error "File data could not be read properly"
+						q.resolve
+
+					# append the data
+					fileData += data
+
+					# handle recursivity 
+					if files.length > 0
+
+						# initialize the next iteration
+						return worker files.pop()
+
+					else	
+
+						return q.resolve fileData	
+
+
+		# initialize the worker recursive function to start the file saving
+		worker files.pop()
 
 		return q.promise
+
+
+	writeData : (path, data) =>
+
+		q = Q.defer()
+
+		fs.writeFile path, data, (error) =>
+
+			# ensure that no error occured
+			if error
+
+				throw error
+
+			q.resolve()
+
+		return q.promise
+
+
+	_getPaths : (files) =>
+
+
+		if not files or not files instanceof Array
+
+			return false
+
+		files = ("#{@config.basePath}/#{file}" for file in files)
+
+		return files
+
+
+
+
+
+
+
+
+exports.Base = Base
