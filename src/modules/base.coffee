@@ -15,43 +15,84 @@ class Base
 			return false
 
 		# normalize the proper paths
-		files = @getPaths files
+		files = @_getPaths(files).reverse()
 
 		q = Q.defer()
-		fileData = null	
+		fileData = ""
 
 		# recursive worker function
 		# need to check that each file exists
 		worker = (path) =>
 
-			console.log path
+			fs.exists path, (status) =>
 
-			# check file exists
-			fs.exists path, (exists) =>
+				# if the file doesn't exist we want to throw an error and stop compilation because this will be a problem for compiled applications
+				if not status
 
-				if not exists 
+					throw new Error "File doesn't exist"
+					q.resolve 
 
-					throw new Error "Path #{path} doesn't exist."
+				# now that we know the file exists, lets read it and grab the data to append to our string that's already being saved
+				fs.readFile path, "utf-8", (err, data) =>
 
-				promise.resolve 	
+					# ensure that the data was read properly
+					if err
 
-				# return another call of this function or return the resolved promise
-		worker files[0]
+						throw new Error "File data could not be read properly"
+						q.resolve
+
+					# append the data
+					fileData += data
+
+					# handle recursivity 
+					if files.length > 0
+
+						# initialize the next iteration
+						return worker files.pop()
+
+					else	
+
+						return q.resolve fileData	
+
+
+		# initialize the worker recursive function to start the file saving
+		worker files.pop()
 
 		return q.promise
 
-	getPaths : (files) =>
+
+	writeData : (path, data) =>
+
+		q = Q.defer()
+
+		fs.writeFile path, data, (error) =>
+
+			# ensure that no error occured
+			if error
+
+				throw error
+
+			q.resolve()
+
+		return q.promise
+
+
+	_getPaths : (files) =>
 
 
 		if not files or not files instanceof Array
 
 			return false
 
-		return files
-
 		files = ("#{@config.basePath}/#{file}" for file in files)
 
 		return files
+
+
+
+
+
+
 
 
 exports.Base = Base
