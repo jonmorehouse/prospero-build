@@ -24,28 +24,16 @@ class Base
 		# need to check that each file exists
 		worker = (path) =>
 
+			console.log path
+
 			# check file exists
 			fs.exists path, (exists) =>
 
 				if not exists 
 
 					throw new Error "Path #{path} doesn't exist."
-					return q.resolve
 
-				# grab the file data and then call the next round of the function
-				fs.readFile path, 'utf-8', (err, data) ->
-
-					if err
-
-						throw new Error "Error reading #{path}."
-						return q.resolve
-
-					
-					# append the data
-					fileData += data	
-					
-					# return the data
-					q.resolve data	
+				promise.resolve 	
 
 				# return another call of this function or return the resolved promise
 		worker files[0]
@@ -60,7 +48,7 @@ class Base
 			return false
 
 		return files
-		
+
 		files = ("#{@config.basePath}/#{file}" for file in files)
 
 		return files
