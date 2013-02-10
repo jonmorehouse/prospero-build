@@ -10,32 +10,60 @@ class Base
 
 	readData : (files) ->
 
-		if not files or typeof files != "array" or files.length == 0
+		if not files or not files instanceof Array
 
 			return false
 
-		# will be responsible for loading in the proper files each time etc
-		# create a deferment promise for this object
+		# normalize the proper paths
+		files = @getPaths files
+
 		q = Q.defer()
+		fileData = null	
 
-		# fileData variable will contain all of the information from all of the files etc
-		fileData = ""
+		# recursive worker function
+		# need to check that each file exists
+		worker = (path) =>
 
-		# need an asynchronouse function here to return the promises etc
-		read = fs.readData array.splice(files, 1), (err, data) ->
+			# check file exists
+			fs.exists path, (exists) =>
 
-			# append the file data
-			fileData += data
+				if not exists 
 
-			# if there are no other files to append then we need to append the data that we recieved
-			if files.length == 0
+					throw new Error "Path #{path} doesn't exist."
+					return q.resolve
 
-				# end the function by fulfilling the promise
-				return q.resolve fileData
+				# grab the file data and then call the next round of the function
+				fs.readFile path, 'utf-8', (err, data) ->
 
-			# return this function
-			else
-				return read
+					if err
 
+						throw new Error "Error reading #{path}."
+						return q.resolve
+
+					
+					# append the data
+					fileData += data	
+					
+					# return the data
+					q.resolve data	
+
+				# return another call of this function or return the resolved promise
+		worker files[0]
 
 		return q.promise
+
+	getPaths : (files) =>
+
+
+		if not files or not files instanceof Array
+
+			return false
+
+		return files
+		
+		files = ("#{@config.basePath}/#{file}" for file in files)
+
+		return files
+
+
+exports.Base = Base

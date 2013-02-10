@@ -19,12 +19,10 @@ describe "Base", ->
 		filesPromise = getFiles.getJavascript "homepage"
 
 		# called once the function resolves its return
-		files.then (data) ->
+		filesPromise.then (data) ->
 
 			files = data
 			done()
-
-
 
 	it "Should be instantiated with just a config object", ->
 
@@ -32,32 +30,63 @@ describe "Base", ->
 		base.should.not.be.undefined
 		base.should.be.an "object"
 
-	describe "Base.readData", ->
+	# test readData functionality
+	# describe "Base.readData", ->
 
-		it "Should be a function", ->
+	# 	it "Should be a function", ->
 
-			should.exist base.readData
-			base.readData.should.be.a "function"
+	# 		should.exist base.readData
+	# 		base.readData.should.be.a "function"
 
-		it "Should return false given anything other than an array of strings", ->
+	# 	it "Should return false given anything other than an array of strings", ->
 
-			fileData = base.readData ""
+	# 		fileData = base.readData ""
 
-			fileData.should.equal false
+	# 		fileData.should.equal false
 
-		it "Should return a promise object, synchronously", ->
+	# 		# now test when given an array of strings
+	# 		fileData = base.readData [""]
+	# 		fileData.should.not.equal false
 
-			# files
-			fileDataPromise = base.readData files
-			fileDataPromise.should.not.be.undefined
-			fileDataPromise.should.be.an "object"	
 
-		it "Should should return a string from the promise asynchronously", (done) ->
+	# 	it "Should return a promise object, synchronously", ->
 
-			fileDataPromise = base.readData files
+	# 		# files
+	# 		fileDataPromise = base.readData files
+	# 		fileDataPromise.should.not.be.undefined
+	# 		fileDataPromise.should.be.an "object"	
 
-			fileDataPromise.then (fileData) ->
+	# 	it "Should should return an array of strings from the promise asynchronously", (done) ->
 
-				should.exist fileData
-				fileData.should.be.a "string"
+	# 		fileDataPromise = base.readData(files).then (fileData) ->
+
+	# 			should.exist fileData
+	# 			fileData.should.be.an "array"
+	# 			fileData.should.have.length.above 0
+
+
+	# 		done()	
+
+
+	# test the getPaths function to ensure proper functionality
+	describe "Base.getPaths", ->
+
+		it "Should be a defined object method", ->
+
+			should.exist base.getPaths files
+			base.getPaths.should.not.be.undefined
+
+		it "Should return false given anything other than an array", ->
+
+			paths = base.getPaths files
+			paths.should.be.an "array"	
+
+			paths = base.getPaths null
+			paths.should.equal false
+
+		it "Should return an array of strings given an array of relative paths", ->
+
+			paths = base.getPaths files
+			paths.should.be.an "array"
+			paths.should.have.length.above 0
 
