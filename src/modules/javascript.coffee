@@ -14,13 +14,11 @@ class Javascript
 		# returns a promise for the file that would be compressed
 
 
-
 	_compress: (data) =>
 
 		# returns a promise to deliver the file that would then be compressed / minimized etc
 
 	_output: (data) =>
-
 		# will be responsible for saving the file to the proper output file based upon our given logic etc
 
 	_updateDatabase : (data) =>

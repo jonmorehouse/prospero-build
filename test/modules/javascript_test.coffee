@@ -32,31 +32,42 @@ describe "Javascript", ->
 		javascript.should.not.be.undefined
 		javascript.should.be.an "object"
 
-	it "Should have a controller function", ->
+	describe "Controller function", ->
 
-		should.exist javascript._controller
-		javascript._controller.should.be.a "function"
+		it "Should be a function", ->
 
-	it "Should have a combine function", ->
+			should.exist javascript._controller
+			javascript._controller.should.be.a "function"
 
-		should.exist javascript._combine
-		javascript._combine.should.be.a "function"
+	describe "Combine function", ->
 
-	it "Should have a compress function", ->
+		it "Should be a function", ->
 
-		should.exist javascript._compress 
-		javascript._compress.should.be.a "function"
+			should.exist javascript._combine
+			javascript._combine.should.be.a "function"
 
-	it "Should have an output function", ->
 
-		should.exist javascript._output
-		javascript._output.should.be.a "function"
+	describe "Compress function", ->
 
-	it "Should have an updateDatabase function", ->
+		it "Should be a function", ->
 
-		should.exist javascript._updateDatabase
-		javascript._updateDatabase.should.be.a "function"
+			should.exist javascript._compress 
+			javascript._compress.should.be.a "function"
+
+	describe "Output function", ->
+
+		it "Should be a function", ->
+
+			should.exist javascript._output
+			javascript._output.should.be.a "function"
+
+	describe "updateDatabase function", ->		
+
+		it "Should be a function", ->
+
+			should.exist javascript._updateDatabase
+			javascript._updateDatabase.should.be.a "function"
+
+			
 
 		
-
-	
