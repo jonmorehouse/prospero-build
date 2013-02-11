@@ -58,7 +58,6 @@ class Javascript extends Base
 			#  
 			q.resolve data
 
-
 		return q.promise
 		
 
