@@ -17,8 +17,6 @@ class Css extends Base
 		# next convert all of the files using the less api
 		# compress the converted string of css and save it properly
 		# update the database and then accordingly this will be served as a live file
-
-
 		q = Q.defer()
 
 		outputFile = "resources/css/live/#{@pageId}.css"
@@ -30,40 +28,21 @@ class Css extends Base
 			# convert the string of the less into valid css
 			@_convertLess(data).then (data) ->
 
-				# now compress the css
-				@_compress(data).then (data) ->
-
-					# finally lets go ahead and validly save the data
-					@writeData data
+				# finally lets go ahead and validly save the data
+				@writeData data
 
 		@_updateDatabase(@config.global.cssTable, @pageId "css").then ->
 
 			# data is now written to properly update the database
 			q.resolve()
 
-
-		return q.promise
-
-
-	_compress : (data) ->
-
-		return string if typeof data != "string"
-
-		q = Q.defer()
-
-		options =
-
-			charset : "utf-8"
-			type: "css"
-			nomunge: true
-
-		yui.compress data, options, (err, data, extra) =>
-
-			q.resolve data
-
+		# return a promise for the proper data
 		return q.promise
 
 	_convertLess : (data) =>
+
+		# make sure that the data passed in is a string
+		return false if not data or typeof(data) != "string"
 
 		q = Q.defer()
 
@@ -79,20 +58,21 @@ class Css extends Base
 			compress: true
 
 		# create a less parser
-		parser new less.Parser parserOptions
+		parser = new less.Parser parserOptions
 
 		# parse the data
-		parser.parse data, (err, tree)
+		parser.parse data, (err, tree) ->
 
+			# check and make sure no errors exist
 			if err 
 				throw err			
 
 			# resolve the minimized css
-			q.resolve tree.toCss options
+			q.resolve tree.toCSS options
 
 		return q.promise
 
-
+exports.Css = Css
 
 
 

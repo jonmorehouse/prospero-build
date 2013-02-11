@@ -11,7 +11,7 @@ describe "Base", ->
 	base = null
 	files = null
 	getFiles = new GetFiles DB, config
-	tempFile = "#{basePath}/tempTest.tmp"
+	tempFile = config.global.testJavascriptOutput
 
 	before (done) ->
 
