@@ -1,10 +1,13 @@
-{mocha, chai, Q, basePath} = require "../test_helper.coffee"
+{mocha, chai, Q, basePath, global} = require "../test_helper.coffee"
+fs = require "fs"
 
 should = chai.should()
 
 {DB, config} = require "#{basePath}/main"
 {GetFiles} = require "#{basePath}/modules/get_files"
 {Javascript} = require "#{basePath}/modules/javascript"
+
+
 
 describe "Javascript", ->
 
@@ -63,50 +66,18 @@ describe "Javascript", ->
 			should.exist javascript._compress 
 			javascript._compress.should.be.a "function"
 
-	describe "updateDatabase function", ->		
+		it "Should return false given anything but a string", ->
 
+			javascript._compress().should.equal false
 
-		pageId = "homepage_test"
+		# validate the actual function
+		it "Should successfully compress javascript", (done) ->
 
-		# delete any weirdness from the database after the calls 
-		after (done) ->
+			fs.readFile config.global.testJavascriptFile, "utf-8", (err, data) ->
 
-			done()
+				javascript._compress(data).then (data) ->
 
-			return
+					data.should.be.defined
+					data.should.be.a "string"		
+					done()
 
-			DB.where({"page_id" : pageId}).delete "javascript_modules", (info) ->
-
-				done()
-
-
-		# initialize all tests		
-		it "Should be a function", ->
-
-			should.exist javascript._updateDatabase
-			javascript._updateDatabase.should.be.a "function"
-
-		it "Should return false when given anything but two strings", ->
-
-			status = javascript._updateDatabase null, null
-
-		it "Should not throw any errors when given two strings", (done) ->
-
-			# create handler variables to help with the multitude of tests that we are running herr
-			errorHandler = (error) ->
-
-				error.should.be.defined
-				done()
-
-			successHandler = (status) ->
-
-				status.should.be.undefined
-				done()
-
-			javascript._updateDatabase(pageId, "test_url").then () ->
-
-				done()
-
-
-
-			

@@ -11,7 +11,7 @@ describe "Base", ->
 	base = null
 	files = null
 	getFiles = new GetFiles DB, config
-	tempFile = "#{basePath}/tempTest.tmp"
+	tempFile = config.global.testJavascriptOutput
 
 	before (done) ->
 
@@ -39,7 +39,7 @@ describe "Base", ->
 
 	it "Should be instantiated with just a config object", ->
 
-		base = new Base config
+		base = new Base config, DB
 		base.should.not.be.undefined
 		base.should.be.an "object"
 
@@ -111,3 +111,48 @@ describe "Base", ->
 			paths.should.be.an "array"
 			paths.should.have.length.above 0
 
+
+	# test the updateDatabase section
+	describe "Base._updateDatabase function", ->		
+
+		pageId = "homepage_test"
+
+		# delete any weirdness from the database after the calls 
+		after (done) ->
+
+			DB.where({"page_id" : pageId}).delete "javascript_modules", (info) ->
+
+				done()
+
+
+		# initialize all tests		
+		it "Should be a function", ->
+
+			should.exist base._updateDatabase
+			base._updateDatabase.should.be.a "function"
+
+		it "Should return false when given anything but two strings", ->
+
+			status = base._updateDatabase null, null
+
+		# 
+		it "Should not throw any errors when given two strings", (done) ->
+
+			# create handler variables to help with the multitude of tests that we are running herr
+			errorHandler = (error) ->
+
+				error.should.be.defined
+				done()
+
+			successHandler = (status) ->
+
+				status.should.be.undefined
+				done()
+
+			base._updateDatabase(config.global.javascriptTable, pageId, "test_url").then () ->
+
+				done()
+
+
+
+			

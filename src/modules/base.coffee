@@ -4,8 +4,7 @@ Q = require "q"
 
 class Base 
 
-	constructor : (@config) ->
-
+	constructor : (@config, @db) ->
 
 
 	readData : (files) ->
@@ -87,6 +86,47 @@ class Base
 		files = ("#{@config.basePath}/#{file}" for file in files)
 
 		return files
+
+
+	_updateDatabase : (table, pageId, outputFile) =>
+
+		# make sure that the inputs are both valid
+		if typeof pageId != "string" or typeof pageId != "string"
+
+			return false
+
+		q = Q.defer()	
+
+		# insert data
+		data = 
+
+			page_id : pageId,
+			status: true,
+			type: "live"
+
+		# search and remove all previous occurrences
+		@db.where(data).delete table, (error) =>
+
+			#  
+			if error
+
+				throw error
+				q.resolve()
+
+			data.url = outputFile
+
+			# insert the data
+			@db.insert table, data, (error, info) =>
+
+				# resolve the promise for the caller
+				if error
+					throw error
+
+				# resolve our promise to the caller function
+				q.resolve()
+
+		# return a promise		
+		return q.promise		
 
 
 
